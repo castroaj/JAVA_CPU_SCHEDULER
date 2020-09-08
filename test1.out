@@ -1,0 +1,21 @@
+FCFS statistics:
+	CPU utilization = 0.941176 (160/170)
+	Average response time = 28.333334 ticks
+	Average turnaround time = 80.666664 ticks
+	Process 1: entered=15 response=40 finished=89
+	Process 2: entered=10 response=10 finished=39
+	Process 3: entered=30 response=90 finished=169
+Priority statistics:
+	CPU utilization = 0.930233 (160/172)
+	Average response time = 0.666667 ticks
+	Average turnaround time = 124.000000 ticks
+	Process 1: entered=15 response=16 finished=146
+	Process 2: entered=10 response=10 finished=171
+	Process 3: entered=30 response=31 finished=110
+RR statistics:
+	CPU utilization = 0.874317 (160/183)
+	Average response time = 6.333333 ticks
+	Average turnaround time = 113.333336 ticks
+	Process 1: entered=15 response=21 finished=139
+	Process 2: entered=10 response=10 finished=74
+	Process 3: entered=30 response=43 finished=182
