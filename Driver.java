@@ -1,4 +1,5 @@
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Driver {
@@ -11,10 +12,13 @@ public class Driver {
             if (processes != null)
             {
                 // First Come First Serve Algorithm
-                FCFS fcfs = new FCFS(processes);
+                FCFS fcfs = new FCFS(copyProcessIntoNewList(processes));
                 fcfs.Run();
                 System.out.print(fcfs.getFinalStatistics());
                 
+                Priority priority = new Priority(copyProcessIntoNewList(processes));
+                priority.Run();
+                System.out.println();
                 
             }
             else
@@ -42,6 +46,15 @@ public class Driver {
         {
             System.out.println(p.toString());
         }
+    }
+
+    public static ArrayList<Process> copyProcessIntoNewList(List<Process> processes)
+    {
+        ArrayList<Process> ps = new ArrayList<Process>();
+        for (Process process : processes) {
+            ps.add(new Process(process));
+        }
+        return ps;
     }
 
 }

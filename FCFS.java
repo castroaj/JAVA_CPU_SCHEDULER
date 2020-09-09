@@ -48,9 +48,10 @@ public class FCFS {
                 {
                     activeProcess = queue.poll();
 
+
                     if (activeProcess.getNumOfTimersOnCpu() == 0)
                     {
-                        activeProcess.setResponseTime(cpuTicker - activeProcess.getArrivalTime());
+                        activeProcess.setResponseTime(cpuTicker);
                     }
 
                     activeProcess.setNumOfTimesOnCpu(activeProcess.getNumOfTimersOnCpu() + 1);
@@ -76,18 +77,9 @@ public class FCFS {
                 {
                     System.out.println("\tProcess has finished. The CPU is now free for the next ready process");
                     activeProcess.setIsTerminated(true);
+                    activeProcess.setTerminationTime(cpuTicker);
                     activeProcess = null;
                 }
-
-                // Check if the burst limit has been reached
-                if (activeProcess != null && activeProcess.getTickCounter() == activeProcess.getBurstTime())
-                {
-                    System.out.println("\tProcess "+ activeProcess.getPID() +" has reached burst limit. Process is now yielding the CPU to the next ready process");
-                    activeProcess.setTickCounter(0);
-                    queue.add(activeProcess);
-                    activeProcess = null;
-                }
-
             }
 
             System.out.println();
@@ -111,16 +103,45 @@ public class FCFS {
     {
         StringBuilder builder = new StringBuilder();
 
-        builder.append("FCFS statistics:\n");
-        builder.append("\tCPU utilization = " + calculateCpuUtil() + " (" + cpuUtilCounter + "/" + cpuTicker + ")\n");
+        builder.append("\nFCFS statistics:");
+        builder.append("\n\tCPU utilization = " + String.format("%.06f", calculateCpuUtil()) + " (" + cpuUtilCounter + "/" + cpuTicker + ")");
+        builder.append("\n\tAverage response time = " + String.format("%.06f", calculateAverageResponseTime()) + " ticks");
+        builder.append("\n\tAverage turnaround time = " + String.format("%.06f", calculateTurnaroundTime()) + " ticks");
         
+        for (Process process : processes) {
+            builder.append("\n\tProcess " + process.getPID() 
+            + ": entered=" + process.getArrivalTime() 
+            + " response=" + process.getResponseTime() 
+            + " finished=" + process.getTerminationTime());
+        }
+        builder.append("\n");
+
         return builder.toString();
     }
 
     public double calculateCpuUtil()
     {
-        return this.cpuUtilCounter / this.cpuTicker;
+        return (double) this.cpuUtilCounter / (double) this.cpuTicker;
     }
 
-    
+    public double calculateAverageResponseTime()
+    {
+        double val = 0; 
+        for (Process process : processes) {
+            val += ((double) process.getResponseTime() - (double) process.getArrivalTime());
+        }
+        return val / (double) processes.size();
+
+    }
+
+    public double calculateTurnaroundTime()
+    {
+        double val = 0; 
+        for (Process process : processes)
+        {
+            val += process.getTerminationTime() - process.getArrivalTime();
+        }
+        return val / (double) processes.size();
+
+    }
 }

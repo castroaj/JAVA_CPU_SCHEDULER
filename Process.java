@@ -10,6 +10,7 @@ public class Process {
     private int tickCounter;
     private int responseTime;
     private int numOfTimesOnCpu;
+    private int terminationTime;
     private boolean isTerminated;
     
 
@@ -24,6 +25,7 @@ public class Process {
         this.tickCounter = otherProcess.tickCounter;
         this.responseTime = otherProcess.responseTime;
         this.isTerminated = otherProcess.isTerminated;
+        this.terminationTime = otherProcess.terminationTime;
         this.numOfTimesOnCpu = otherProcess.numOfTimesOnCpu;
     }
 
@@ -39,11 +41,17 @@ public class Process {
         this.numOfTimesOnCpu = 0;
         this.responseTime = 0;
         this.isTerminated = false;
+        this.terminationTime = -1;
     }
 
     public String toString()
     {
         return "\nPID: " + pid + "\nPriority: " + priority+ "\nArrival Time: " + arrivalTime + "\nBurst Time: " + burstTime + "\nTotal Ticks: " + totalTicks + "\n";
+    }
+
+    public int getPriority()
+    {
+        return this.priority;
     }
 
     public int getPID()
@@ -114,5 +122,15 @@ public class Process {
     public void setResponseTime(int r)
     {
         this.responseTime = r;
+    }
+
+    public int getTerminationTime()
+    {
+        return this.terminationTime;
+    }
+
+    public void setTerminationTime(int t)
+    {
+        this.terminationTime = t;
     }
 }
