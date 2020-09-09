@@ -8,8 +8,10 @@ public class Process {
     private int totalTicks;
     private int totalTicksRemaining;
     private int tickCounter;
-    private boolean isTerminated;
+    private int responseTime;
     private int numOfTimesOnCpu;
+    private boolean isTerminated;
+    
 
     public Process (Process otherProcess)
     {
@@ -20,6 +22,7 @@ public class Process {
         this.totalTicks = otherProcess.totalTicks;
         this.totalTicksRemaining = otherProcess.totalTicksRemaining;
         this.tickCounter = otherProcess.tickCounter;
+        this.responseTime = otherProcess.responseTime;
         this.isTerminated = otherProcess.isTerminated;
         this.numOfTimesOnCpu = otherProcess.numOfTimesOnCpu;
     }
@@ -34,6 +37,7 @@ public class Process {
         this.totalTicksRemaining = totalTicks;
         this.tickCounter = 0;
         this.numOfTimesOnCpu = 0;
+        this.responseTime = 0;
         this.isTerminated = false;
     }
 
@@ -102,4 +106,13 @@ public class Process {
         return numOfTimesOnCpu;
     }
 
+    public int getResponseTime()
+    {
+        return this.responseTime;
+    }
+
+    public void setResponseTime(int r)
+    {
+        this.responseTime = r;
+    }
 }

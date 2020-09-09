@@ -10,10 +10,11 @@ public class Driver {
             
             if (processes != null)
             {
+                // First Come First Serve Algorithm
                 FCFS fcfs = new FCFS(processes);
                 fcfs.Run();
-
-                System.out.println("Finished");
+                System.out.print(fcfs.getFinalStatistics());
+                
                 
             }
             else

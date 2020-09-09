@@ -9,12 +9,14 @@ public class FCFS {
     private Process activeProcess;
 
     private int cpuTicker;
+    private int cpuUtilCounter;
 
     public FCFS(List<Process> processes) 
     {
         this.processes = processes;
         queue = new ArrayBlockingQueue<Process>(processes.size());
         cpuTicker = 0;
+        cpuUtilCounter = 0;
         activeProcess = null;
     }
 
@@ -45,14 +47,21 @@ public class FCFS {
                 if (activeProcess == null)
                 {
                     activeProcess = queue.poll();
+
+                    if (activeProcess.getNumOfTimersOnCpu() == 0)
+                    {
+                        activeProcess.setResponseTime(cpuTicker - activeProcess.getArrivalTime());
+                    }
+
                     activeProcess.setNumOfTimesOnCpu(activeProcess.getNumOfTimersOnCpu() + 1);
                     System.out.println("\tProcess " + activeProcess.getPID() + " is now allowed to use the CPU\n");
                 }
             }
 
-
             if (activeProcess != null)
             {
+                cpuUtilCounter++;
+
                 activeProcess.setTickCounter(activeProcess.getTickCounter() + 1);
                 activeProcess.setTotalTicksRemaining(activeProcess.getTotalTicksRemaining() - 1);
 
@@ -97,5 +106,21 @@ public class FCFS {
         System.out.println("\nAll Processes have terminated");
         return false;
     }
+
+    public String getFinalStatistics()
+    {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("FCFS statistics:\n");
+        builder.append("\tCPU utilization = " + calculateCpuUtil() + " (" + cpuUtilCounter + "/" + cpuTicker + ")\n");
+        
+        return builder.toString();
+    }
+
+    public double calculateCpuUtil()
+    {
+        return this.cpuUtilCounter / this.cpuTicker;
+    }
+
     
 }
