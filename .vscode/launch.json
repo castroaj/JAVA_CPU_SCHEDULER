@@ -4,19 +4,12 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-
         {
             "type": "java",
-            "name": "Debug (Launch) - Current File",
-            "request": "launch",
-            "mainClass": "${file}",
-        },
-        {
-            "type": "java",
-            "name": "Debug (Launch)-Driver<CS-450-PA1_4a9afe17>",
+            "name": "CodeLens (Launch) - Driver",
             "request": "launch",
             "mainClass": "Driver",
-            "projectName": "CS-450-PA1_4a9afe17",
+            "projectName": "CS-450-PA1_2fa3fb84",
             "args": "processes.txt"
         }
     ]
