@@ -10,35 +10,35 @@ public class Priority
 
     private int cpuTicker;
     private int cpuUtilCounter;
-    private boolean contextSwitch;
+    private boolean debug;
 
-    public Priority(List<Process> processes) 
+    public Priority(List<Process> processes, boolean debug) 
     {
         this.processes = processes;
-        queue = new PriorityQueue<Process>((Process p1, Process p2) -> Integer.compare(p1.getPriority(), p2.getPriority()));
-        cpuTicker = 0;
-        cpuUtilCounter = 0;
-        activeProcess = null;
-        contextSwitch = false;
+        this.queue = new PriorityQueue<Process>((Process p1, Process p2) -> Integer.compare(p1.getPriority(), p2.getPriority()));
+        this.cpuTicker = 0;
+        this.cpuUtilCounter = 0;
+        this.activeProcess = null;
+        this.debug = debug;
     }
 
     public void Run()
     {
         while (isAnyProcessRunning())
         {
-            System.out.println("CPU Clock: " + cpuTicker);
+            if (debug) { System.out.println("CPU Clock: " + cpuTicker); }
 
             // Check for arrival of processes
             for (Process process : processes) {
                 if (process.getArrivalTime() == cpuTicker)
                 {
-                    System.out.println("\tProcess " + process.getPID() + " is being added to ready queue\n");
+                    if (debug) { System.out.println("\tProcess " + process.getPID() + " is being added to ready queue\n"); }
                     queue.add(process);
                 }
             }
 
             // Print if the CPU is IDLE
-            if (queue.size() == 0  && activeProcess == null)
+            if ((queue.size() == 0  && activeProcess == null) && debug)
             {
                 System.out.println("\tIDLE");
             }
@@ -56,7 +56,7 @@ public class Priority
                     }
 
                     activeProcess.setNumOfTimesOnCpu(activeProcess.getNumOfTimersOnCpu() + 1);
-                    System.out.println("\tProcess " + activeProcess.getPID() + " is now allowed to use the CPU\n");
+                    if (debug) { System.out.println("\tProcess " + activeProcess.getPID() + " is now allowed to use the CPU\n"); }
                 }
                 else
                 {
@@ -67,47 +67,42 @@ public class Priority
                         queue.add(activeProcess);
                         contextSwitch();
                         activeProcess = p;
+
+                        if (activeProcess.getNumOfTimersOnCpu() == 0)
+                        {
+                            activeProcess.setResponseTime(cpuTicker);
+                        }
+
+                        activeProcess.setNumOfTimesOnCpu(activeProcess.getNumOfTimersOnCpu() + 1);
                     }
                 }
             }
 
-            if (activeProcess != null && !contextSwitch)
+            if (activeProcess != null)
             {
                 cpuUtilCounter++;
 
                 activeProcess.setTickCounter(activeProcess.getTickCounter() + 1);
                 activeProcess.setTotalTicksRemaining(activeProcess.getTotalTicksRemaining() - 1);
 
-                System.out.println("\tActive Process: PID " + activeProcess.getPID() + " (" + activeProcess.getPriority() + ")\n\tProcess has ticked " + 
-                                    activeProcess.getTickCounter() + " times out of "+ activeProcess.getBurstTime() 
-                                    +" this burst\n\tIt has " + activeProcess.getTotalTicksRemaining() +
+                if (debug) 
+                {
+                    System.out.println("\tActive Process: PID " + activeProcess.getPID() + " (" + activeProcess.getPriority() + ")\n\tProcess has ticked " + 
+                                    activeProcess.getTickCounter() + " times\n\tIt has " + activeProcess.getTotalTicksRemaining() +
                                      " total ticks remaining");
-
+                }
 
                 // Check if the process is finished
                 if (activeProcess.getTotalTicksRemaining() == 0)
                 {
-                    System.out.println("\tProcess has finished. The CPU is now free for the next ready process");
+                    if (debug) { System.out.println("\tProcess has finished. The CPU is now free for the next ready process"); }
                     activeProcess.setIsTerminated(true);
                     activeProcess.setTerminationTime(cpuTicker);
                     activeProcess = null;
                 }
-
-                // // Check if the burst limit has been reached
-                // if (activeProcess != null && activeProcess.getTickCounter() == activeProcess.getBurstTime())
-                // {
-                //     System.out.println("\tProcess "+ activeProcess.getPID() +" has reached burst limit. Process is now yielding the CPU to the next ready process");
-                //     activeProcess.setTickCounter(0);
-                //     queue.add(activeProcess);
-                //     activeProcess = null;
-                //     contextSwitch();
-                // }
-
             }
 
-            if (contextSwitch) { contextSwitch = false; }
-
-            System.out.println();
+            if (debug) { System.out.println(); }
             cpuTicker++;
         }
     }
@@ -120,16 +115,65 @@ public class Priority
                 return true;
             }
         }
-        System.out.println("\nAll Processes have terminated");
+        if (debug) { System.out.println("\nAll Processes have terminated"); }
         return false;
+    }
+
+    public String getFinalStatistics()
+    {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("Priority statistics:");
+        builder.append("\n\tCPU utilization = " + String.format("%.06f", calculateCpuUtil()) + " (" + cpuUtilCounter + "/" + cpuTicker + ")");
+        builder.append("\n\tAverage response time = " + String.format("%.06f", calculateAverageResponseTime()) + " ticks");
+        builder.append("\n\tAverage turnaround time = " + String.format("%.06f", calculateTurnaroundTime()) + " ticks");
+        
+        for (Process process : processes) {
+            builder.append("\n\tProcess " + process.getPID() 
+            + ": entered=" + process.getArrivalTime() 
+            + " response=" + process.getResponseTime() 
+            + " finished=" + process.getTerminationTime());
+        }
+        builder.append("\n");
+
+        return builder.toString();
+    }
+
+
+    public double calculateCpuUtil()
+    {
+        return (double) this.cpuUtilCounter / (double) this.cpuTicker;
+    }
+
+    public double calculateAverageResponseTime()
+    {
+        double val = 0; 
+        for (Process process : processes) {
+            val += ((double) process.getResponseTime() - (double) process.getArrivalTime());
+        }
+        return val / (double) processes.size();
+
+    }
+
+    public double calculateTurnaroundTime()
+    {
+        double val = 0; 
+        for (Process process : processes)
+        {
+            val += process.getTerminationTime() - process.getArrivalTime();
+        }
+        return val / (double) processes.size();
+
     }
 
     public void contextSwitch()
     {
-        contextSwitch = true;
         cpuTicker++;
-        System.out.println("\nCPU Clock: " + cpuTicker);
-        System.out.println("\tCONTEXT SWITCH");
+        if (debug) 
+        {
+            System.out.println("\nCPU Clock: " + cpuTicker);
+            System.out.println("\tCONTEXT SWITCH");
+        }
     }
 
 }

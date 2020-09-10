@@ -1,0 +1,39 @@
+Name:
+
+sched
+
+Description:
+
+Reads input from stdin that lists all processes - one per line. For each 
+process, there are 5 entries representing the process':
+
+o PID
+o Priority (1=highest, 10=lowest)
+o Arrival time
+o Burst time
+o Total ticks need to finish
+
+The program runs a scheduling simulation of the processes using 
+non-preemptive FCFS, preemptive priority, and round robin (with a time 
+quantum of 10 ticks). The program then prints out the following 
+statistics:
+
+o CPU utilization
+o Average response time
+o Average turnaround time
+o Start and end time of each process
+
+Compiling:
+
+make
+
+Running:
+
+./sched [DEBUG]
+
+If the DEBUG flag is given on the command line the program will print 
+out debugging information.
+
+Known Bugs:
+
+None.

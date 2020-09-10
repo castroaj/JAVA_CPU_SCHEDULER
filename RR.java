@@ -2,18 +2,18 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 
-
-public class FCFS {
-
+public class RR {
+    
     private List<Process> processes;
     private Queue<Process> queue;
     private Process activeProcess;
 
     private int cpuTicker;
     private int cpuUtilCounter;
+    private int timeQuantum;
     private boolean debug;
 
-    public FCFS(List<Process> processes, boolean debug) 
+    public RR(List<Process> processes, boolean debug) 
     {
         this.processes = processes;
         this.queue = new ArrayBlockingQueue<Process>(processes.size());
@@ -21,13 +21,13 @@ public class FCFS {
         this.cpuUtilCounter = 0;
         this.activeProcess = null;
         this.debug = debug;
+        this.timeQuantum = 10;
     }
 
     public void Run() 
     {
         while (isAnyProcessRunning())
         {
-            
             if (debug) { System.out.println("CPU Clock: " + cpuTicker); }
 
             // Check for arrival of processes
@@ -85,6 +85,12 @@ public class FCFS {
                     activeProcess.setTerminationTime(cpuTicker);
                     activeProcess = null;
                 }
+
+                if (activeProcess.getTickCounter() >= timeQuantum || activeProcess.getTickCounter() >= activeProcess.getBurstTime())
+                {
+                    queue.add(activeProcess);
+                    activeProcess = null;
+                }
             }
 
             if (debug) { System.out.println(); }
@@ -108,7 +114,7 @@ public class FCFS {
     {
         StringBuilder builder = new StringBuilder();
 
-        builder.append("FCFS statistics:");
+        builder.append("RR statistics:");
         builder.append("\n\tCPU utilization = " + String.format("%.06f", calculateCpuUtil()) + " (" + cpuUtilCounter + "/" + cpuTicker + ")");
         builder.append("\n\tAverage response time = " + String.format("%.06f", calculateAverageResponseTime()) + " ticks");
         builder.append("\n\tAverage turnaround time = " + String.format("%.06f", calculateTurnaroundTime()) + " ticks");
@@ -148,4 +154,6 @@ public class FCFS {
         }
         return val / (double) processes.size();
     }
+
+
 }

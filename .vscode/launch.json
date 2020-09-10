@@ -9,8 +9,16 @@
             "name": "CodeLens (Launch) - Driver",
             "request": "launch",
             "mainClass": "Driver",
-            "projectName": "CS-450-PA1_2fa3fb84",
+            "projectName": "CS-450-PA1_9d4cff84",
             "args": "processes.txt"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Driver",
+            "request": "launch",
+            "mainClass": "Driver",
+            "projectName": "CS-450-PA1_2fa3fb84",
+            
         }
     ]
 }
