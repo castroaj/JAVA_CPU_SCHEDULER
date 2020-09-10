@@ -52,7 +52,6 @@ public class RR {
                 {
                     activeProcess = queue.poll();
 
-
                     if (activeProcess.getNumOfTimersOnCpu() == 0)
                     {
                         activeProcess.setResponseTime(cpuTicker);
@@ -86,10 +85,12 @@ public class RR {
                     activeProcess = null;
                 }
 
-                if (activeProcess.getTickCounter() >= timeQuantum || activeProcess.getTickCounter() >= activeProcess.getBurstTime())
+                if (activeProcess != null && (activeProcess.getTickCounter() >= timeQuantum || activeProcess.getTickCounter() >= activeProcess.getBurstTime()))
                 {
                     queue.add(activeProcess);
+                    activeProcess.setTickCounter(0);
                     activeProcess = null;
+                    contextSwitch();
                 }
             }
 
@@ -153,6 +154,16 @@ public class RR {
             val += process.getTerminationTime() - process.getArrivalTime();
         }
         return val / (double) processes.size();
+    }
+
+    public void contextSwitch()
+    {
+        cpuTicker++;
+        if (debug) 
+        {
+            System.out.println("\nCPU Clock: " + cpuTicker);
+            System.out.println("\tCONTEXT SWITCH");
+        }
     }
 
 

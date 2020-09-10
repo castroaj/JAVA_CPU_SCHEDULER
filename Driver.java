@@ -38,7 +38,7 @@ public class Driver {
                 System.out.print(priority.getFinalStatistics());
 
                 RR roundRobin = new RR(copyProcessIntoNewList(processes), debug);
-                priority.Run();
+                roundRobin.Run();
                 System.out.println(roundRobin.getFinalStatistics());
                 
             }
