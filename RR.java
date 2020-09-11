@@ -26,7 +26,7 @@ public class RR {
 
     public void Run() 
     {
-        while (isAnyProcessRunning())
+        while (HelperFunctions.isAnyProcessRunning(processes, debug))
         {
             if (debug) { System.out.println("CPU Clock: " + cpuTicker); }
 
@@ -99,26 +99,14 @@ public class RR {
         }
     }
 
-    public boolean isAnyProcessRunning()
-    {
-        for (Process process : processes) {
-            if (!process.getIsTerminated()) 
-            {
-                return true;
-            }
-        }
-        if (debug) { System.out.println("\nAll Processes have terminated"); }
-        return false;
-    }
-
     public String getFinalStatistics()
     {
         StringBuilder builder = new StringBuilder();
 
         builder.append("RR statistics:");
-        builder.append("\n\tCPU utilization = " + String.format("%.06f", calculateCpuUtil()) + " (" + cpuUtilCounter + "/" + cpuTicker + ")");
-        builder.append("\n\tAverage response time = " + String.format("%.06f", calculateAverageResponseTime()) + " ticks");
-        builder.append("\n\tAverage turnaround time = " + String.format("%.06f", calculateTurnaroundTime()) + " ticks");
+        builder.append("\n\tCPU utilization = " + String.format("%.06f", HelperFunctions.calculateCpuUtil(cpuUtilCounter, cpuTicker)) + " (" + cpuUtilCounter + "/" + cpuTicker + ")");
+        builder.append("\n\tAverage response time = " + String.format("%.06f", HelperFunctions.calculateAverageResponseTime(processes)) + " ticks");
+        builder.append("\n\tAverage turnaround time = " + String.format("%.06f", HelperFunctions.calculateTurnaroundTime(processes)) + " ticks");
         
         for (Process process : processes) {
             builder.append("\n\tProcess " + process.getPID() 
@@ -131,30 +119,6 @@ public class RR {
         return builder.toString();
     }
 
-    public double calculateCpuUtil()
-    {
-        return (double) this.cpuUtilCounter / (double) this.cpuTicker;
-    }
-
-    public double calculateAverageResponseTime()
-    {
-        double val = 0; 
-        for (Process process : processes) {
-            val += ((double) process.getResponseTime() - (double) process.getArrivalTime());
-        }
-        return val / (double) processes.size();
-
-    }
-
-    public double calculateTurnaroundTime()
-    {
-        double val = 0; 
-        for (Process process : processes)
-        {
-            val += process.getTerminationTime() - process.getArrivalTime();
-        }
-        return val / (double) processes.size();
-    }
 
     public void contextSwitch()
     {

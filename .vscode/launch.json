@@ -10,7 +10,7 @@
             "request": "launch",
             "mainClass": "Driver",
             "projectName": "CS-450-PA1_9d4cff84",
-            "args": "processes.txt"
+            "args": "-d processes2.txt"
         },
         {
             "type": "java",

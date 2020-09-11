@@ -40,4 +40,43 @@ public class HelperFunctions {
     }
 
 
+    public static boolean isAnyProcessRunning(List<Process> processes, boolean debug)
+    {
+        for (Process process : processes) {
+            if (!process.getIsTerminated()) 
+            {
+                return true;
+            }
+        }
+        if (debug) { System.out.println("\nAll Processes have terminated"); }
+        return false;
+    }
+
+
+    public static double calculateCpuUtil(int cpuUtilCounter, int cpuTicker)
+    {
+        return (double) cpuUtilCounter / (double) cpuTicker;
+    }
+
+    public static double calculateAverageResponseTime(List<Process> processes)
+    {
+        double val = 0; 
+        for (Process process : processes) {
+            val += ((double) process.getResponseTime() - (double) process.getArrivalTime());
+        }
+        return val / (double) processes.size();
+
+    }
+
+    public static double calculateTurnaroundTime(List<Process> processes)
+    {
+        double val = 0; 
+        for (Process process : processes)
+        {
+            val += process.getTerminationTime() - process.getArrivalTime();
+        }
+        return val / (double) processes.size();
+
+    }
+
 }
