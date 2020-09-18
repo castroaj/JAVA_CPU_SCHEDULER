@@ -5,6 +5,7 @@ Name: Alexander Castro
 Implementaion of three CPU scheduling algorithms
 
 Description:
+
 	Reads input from an input file that lists all of the processes.
 	The input file should be formated with each process being on its
 	own individual line. For each process, there are 5 fields:
@@ -30,6 +31,7 @@ Description:
 		- Start and end time of each process
 
 Compiling:
+
 	The provided makefile should build the project for you. Run the following 
 	command to use the makefile:
 
@@ -40,12 +42,14 @@ Compiling:
 	directory.
 
 Cleaning:
+
 	If you wish to clean the project (Remove all binaries and executables), then 
 	you can run the following command to do so:
 		
 		make clean
 
 Running:
+
 	The application has two modes:
 		- Standard Mode
 		- Debug Mode
@@ -72,5 +76,6 @@ Running:
 			java -jar exe.jar -d [Processes Input File]
 
 Known Bugs:
+
 	The are no known bugs for any of the scheduling algorithms
 
