@@ -4,8 +4,18 @@ import java.util.List;
 import java.io.File;
 import java.util.Scanner;
 
+/**
+ * Class of static helper functions used to prevent code duplication.
+ */
 public class HelperFunctions {
 
+    /**
+     * Helper function that parses the input file and creates a collection
+     * of process objects.
+     * 
+     * @param filename is the input file name from the command line
+     * @return a list of process objects derived from the input file
+     */
     public static List<Process> GetListOfProcessesFromFile(String filename)
     {
         List<Process> processes = new ArrayList<Process>();
@@ -39,7 +49,13 @@ public class HelperFunctions {
         }
     }
 
-
+    /**
+     * Function that determines if any of the processes are flagged as terminated or not.
+     * 
+     * @param processes is the list of processes to check
+     * @param debug is whether or not to print debug message
+     * @return Whether or not any processes are still running
+     */
     public static boolean isAnyProcessRunning(List<Process> processes, boolean debug)
     {
         for (Process process : processes) {
@@ -52,12 +68,24 @@ public class HelperFunctions {
         return false;
     }
 
-
+    /**
+     * Function that caluclations the CPU utilization.
+     * 
+     * @param cpuUtilCounter is how many ticks used the CPU
+     * @param cpuTicker is the total number of ticks that occured
+     * @return
+     */
     public static double calculateCpuUtil(int cpuUtilCounter, int cpuTicker)
     {
         return (double) cpuUtilCounter / (double) cpuTicker;
     }
 
+    /**
+     * 
+     * 
+     * @param processes
+     * @return
+     */
     public static double calculateAverageResponseTime(List<Process> processes)
     {
         double val = 0; 
