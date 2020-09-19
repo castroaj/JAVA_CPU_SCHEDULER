@@ -2,7 +2,7 @@
 
 Name: Alexander Castro
 
-Implementaion of three CPU scheduling algorithms
+Implementaion of three CPU scheduling algorithms:
 
 Description:
 

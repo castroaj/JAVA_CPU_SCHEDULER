@@ -2,7 +2,6 @@
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * This is a Driver class. This will be the entry point of the applicaiton
  * and will dispatch each of the subsequent algorithms to perform the CPU
@@ -24,17 +23,19 @@ public class Driver {
         {
             startProgram(args[0], false);
         }
+        // Initiate Debug Mode
+        else if (args.length == 2 && 0 == args[0].compareTo("-d"))
+        {
+            
+            startProgram(args[1], true);
+
+        }
         else
         {
-            // Initiate Debug Mode
-            if (args.length == 2 && 0 == args[0].compareTo("-d"))
-            {
-                startProgram(args[1], true);
-            }
+            // Error Handling
+            printUsage();
+            System.exit(-1);
         }
-        // Error Handling
-        printUsage();
-        System.exit(-1);
     }
 
     /**
@@ -55,24 +56,24 @@ public class Driver {
             if (processes != null)
             {
                 // First Come First Serve Algorithm
-                if (debug) { System.out.println("First Come First Serve Algorithm:\n\n"); }
+                if (debug) { System.out.println("First Come First Serve Algorithm:"); }
                 FCFS fcfs = new FCFS(copyProcessIntoNewList(processes), debug);
                 fcfs.Run();
-                if(debug) { System.out.println("/n/n/n"); }
+                if(debug) { System.out.println("\n\n\n"); }
                 
                 
                 // Preemptive Priority Algorithm
-                if (debug) { System.out.println("Preemptive Priority Algorithm:\n\n"); }
+                if (debug) { System.out.println("Preemptive Priority Algorithm:"); }
                 Priority priority = new Priority(copyProcessIntoNewList(processes), debug);
                 priority.Run();
-                if(debug) { System.out.println("/n/n/n"); }
+                if(debug) { System.out.println("\n\n\n"); }
                 
                 
                 // Round Robin Algorithm
-                if (debug) { System.out.println("Round Robin Algorithm:\n\n"); }
+                if (debug) { System.out.println("Round Robin Algorithm:"); }
                 RR roundRobin = new RR(copyProcessIntoNewList(processes), debug);
                 roundRobin.Run();
-                if(debug) { System.out.println("/n/n/n"); }
+                if(debug) { System.out.println("\n\n\n"); }
                 
                 // Print final statistics for all of the algorithms
                 System.out.print(fcfs.getFinalStatistics());
@@ -107,8 +108,8 @@ public class Driver {
      */
     public static List<Process> copyProcessIntoNewList(List<Process> processes)
     {
-        List<Process> ps = new ArrayList<Process>();
-        processes.forEach(p->ps.add(p));
+        ArrayList<Process> ps = new ArrayList<Process>();
+        processes.forEach(p->ps.add(new Process(p)));
         return ps;
     }
 

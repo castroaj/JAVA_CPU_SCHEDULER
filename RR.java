@@ -2,6 +2,9 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 
+/**
+ * Class that encapsulates the Round Robin CPU scheduling algorithm.
+ */
 public class RR {
     
     private List<Process> processes;
@@ -13,6 +16,12 @@ public class RR {
     private int timeQuantum;
     private boolean debug;
 
+    /**
+     * Constructor function for the Round Robin class.
+     * 
+     * @param processes is the list of processes that will be processed
+     * @param debug is a boolean flag used for optional logging
+     */
     public RR(List<Process> processes, boolean debug) 
     {
         this.processes = processes;
@@ -24,42 +33,47 @@ public class RR {
         this.timeQuantum = 10;
     }
 
+    /**
+     * Function that runs the CPU simulation using the Round Robin algorithm
+     */
     public void Run() 
     {
         while (HelperFunctions.isAnyProcessRunning(processes, debug))
         {
-            if (debug) { System.out.println("CPU Clock: " + cpuTicker); }
-
             // Check for arrival of processes
-            for (Process process : processes) {
-                if (process.getArrivalTime() == cpuTicker)
+            processes.forEach(p->{
+                if (p.getArrivalTime() == cpuTicker)
                 {
-                    if (debug) { System.out.println("\tProcess " + process.getPID() + " is being added to ready queue\n"); }
-                    queue.add(process);
+                    if (debug) { System.out.println("\tProcess " + p.getPID() + " is being added to ready queue\n"); }
+                    queue.add(p);
+                }
+            });
+
+            if (debug) 
+            {   
+                // Print CPU clock
+                System.out.println("CPU Clock: " + cpuTicker);
+
+                // Print if the CPU is IDLE
+                if ((queue.size() == 0  && activeProcess == null))
+                {
+                    System.out.println("\tIDLE");
                 }
             }
 
-            // Print if the CPU is IDLE
-            if ((queue.size() == 0  && activeProcess == null) && debug)
-            {
-                System.out.println("\tIDLE");
-            }
 
             // Give queued process the CPU if it is free
-            if (queue.size() > 0)
+            if (queue.size() > 0 && activeProcess == null)
             {
-                if (activeProcess == null)
+                activeProcess = queue.poll();
+
+                if (activeProcess.getNumOfTimesOnCpu() == 0)
                 {
-                    activeProcess = queue.poll();
-
-                    if (activeProcess.getNumOfTimersOnCpu() == 0)
-                    {
-                        activeProcess.setResponseTime(cpuTicker);
-                    }
-
-                    activeProcess.setNumOfTimesOnCpu(activeProcess.getNumOfTimersOnCpu() + 1);
-                    if (debug) { System.out.println("\tProcess " + activeProcess.getPID() + " is now allowed to use the CPU\n"); }
+                    activeProcess.setResponseTime(cpuTicker);
                 }
+
+                activeProcess.setNumOfTimesOnCpu(activeProcess.getNumOfTimesOnCpu() + 1);
+                if (debug) { System.out.println("\tProcess " + activeProcess.getPID() + " is now allowed to use the CPU\n"); }
             }
 
             if (activeProcess != null)
@@ -99,6 +113,11 @@ public class RR {
         }
     }
 
+    /**
+     * Function that generates the final statistics after the algorithm has been run.
+     * 
+     * @return string containing all the final statistics
+     */
     public String getFinalStatistics()
     {
         StringBuilder builder = new StringBuilder();
@@ -108,18 +127,21 @@ public class RR {
         builder.append("\n\tAverage response time = " + String.format("%.06f", HelperFunctions.calculateAverageResponseTime(processes)) + " ticks");
         builder.append("\n\tAverage turnaround time = " + String.format("%.06f", HelperFunctions.calculateTurnaroundTime(processes)) + " ticks");
         
-        for (Process process : processes) {
-            builder.append("\n\tProcess " + process.getPID() 
-            + ": entered=" + process.getArrivalTime() 
-            + " response=" + process.getResponseTime() 
-            + " finished=" + process.getTerminationTime());
-        }
+        processes.forEach(p->{
+            builder.append("\n\tProcess " + p.getPID() 
+            + ": entered=" + p.getArrivalTime() 
+            + " response=" + p.getResponseTime() 
+            + " finished=" + p.getTerminationTime());
+        });
+
         builder.append("\n");
 
         return builder.toString();
     }
 
-
+    /**
+     * Helper function that is called to simulate a context switch.
+     */
     public void contextSwitch()
     {
         cpuTicker++;

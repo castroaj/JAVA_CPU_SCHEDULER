@@ -69,7 +69,7 @@ public class HelperFunctions {
     }
 
     /**
-     * Function that caluclations the CPU utilization.
+     * Function that calculates the CPU utilization.
      * 
      * @param cpuUtilCounter is how many ticks used the CPU
      * @param cpuTicker is the total number of ticks that occured
@@ -81,10 +81,11 @@ public class HelperFunctions {
     }
 
     /**
+     * Function that calculates the AVG response time using information stored
+     * in each process.
      * 
-     * 
-     * @param processes
-     * @return
+     * @param processes is the list of processes
+     * @return average response time
      */
     public static double calculateAverageResponseTime(List<Process> processes)
     {
@@ -93,9 +94,15 @@ public class HelperFunctions {
             val += ((double) process.getResponseTime() - (double) process.getArrivalTime());
         }
         return val / (double) processes.size();
-
     }
 
+    /**
+     * Function that calculates the AVG turnaround time using information in each
+     * process.
+     * 
+     * @param processes is the list of processes
+     * @return average turnaround time
+     */
     public static double calculateTurnaroundTime(List<Process> processes)
     {
         double val = 0; 
