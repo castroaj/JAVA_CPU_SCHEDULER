@@ -1,4 +1,4 @@
-Name: Alexander Castro
+Author: Alexander Castro
 
 Implementaion of three CPU scheduling algorithms:
 
