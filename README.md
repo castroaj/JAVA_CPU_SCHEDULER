@@ -1,5 +1,3 @@
-# CS-450-PA1
-
 Name: Alexander Castro
 
 Implementaion of three CPU scheduling algorithms:
